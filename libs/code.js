@@ -45,35 +45,42 @@ var correctAnswersCountV = 0;
 
 /*========End=======*/
 
-function init() {
+function init()
+{
   canvas = document.getElementById("canvas");
   anim_container = document.getElementById("animation_container");
   dom_overlay_container = document.getElementById("dom_overlay_container");
   var comp = AdobeAn.getComposition("18ADE7C025CE594DBA1302B5432009E3");
   var lib = comp.getLibrary();
   var loader = new createjs.LoadQueue(false);
-  loader.addEventListener("fileload", function (evt) {
+  loader.addEventListener("fileload", function (evt)
+  {
     handleFileLoad(evt, comp);
   });
-  loader.addEventListener("complete", function (evt) {
+  loader.addEventListener("complete", function (evt)
+  {
     handleComplete(evt, comp);
   });
   var lib = comp.getLibrary();
   loader.loadManifest(lib.properties.manifest);
 }
-function handleFileLoad(evt, comp) {
+function handleFileLoad(evt, comp)
+{
   var images = comp.getImages();
-  if (evt && evt.item.type == "image") {
+  if (evt && evt.item.type == "image")
+  {
     images[evt.item.id] = evt.result;
   }
 }
-function handleComplete(evt, comp) {
+function handleComplete(evt, comp)
+{
   //This function is always called, irrespective of the content. You can use the variable "stage" after it is created in token create_stage.
   var lib = comp.getLibrary();
   var ss = comp.getSpriteSheet();
   var queue = evt.currentTarget;
   var ssMetadata = lib.ssMetadata;
-  for (i = 0; i < ssMetadata.length; i++) {
+  for (i = 0; i < ssMetadata.length; i++)
+  {
     ss[ssMetadata[i].name] = new createjs.SpriteSheet({
       images: [queue.getResult(ssMetadata[i].name)],
       frames: ssMetadata[i].frames,
@@ -83,7 +90,8 @@ function handleComplete(evt, comp) {
 
   stage = new lib.Stage(canvas);
   //Registers the "tick" event listener.
-  fnStartAnimation = function () {
+  fnStartAnimation = function ()
+  {
     stage.addChild(exportRoot);
     stage.enableMouseOver(10);
     createjs.Touch.enable(stage);
@@ -97,14 +105,16 @@ function handleComplete(evt, comp) {
     prepareTheStage();
   };
   //Code to support hidpi screens and responsive scaling.
-  function makeResponsive(isResp, respDim, isScale, scaleType) {
+  function makeResponsive(isResp, respDim, isScale, scaleType)
+  {
     var lastW,
       lastH,
       lastS = 1;
     window.addEventListener("resize", resizeCanvas);
     resizeCanvas();
 
-    function resizeCanvas() {
+    function resizeCanvas()
+    {
       var w = lib.properties.width,
         h = lib.properties.height;
       var iw = window.innerWidth,
@@ -113,17 +123,22 @@ function handleComplete(evt, comp) {
         xRatio = iw / w,
         yRatio = ih / h,
         sRatio = 1;
-      if (isResp) {
+      if (isResp)
+      {
         if (
           (respDim == "width" && lastW == iw) ||
           (respDim == "height" && lastH == ih)
-        ) {
+        )
+        {
           sRatio = lastS;
-        } else if (!isScale) {
+        } else if (!isScale)
+        {
           if (iw < w || ih < h) sRatio = Math.min(xRatio, yRatio);
-        } else if (scaleType == 1) {
+        } else if (scaleType == 1)
+        {
           sRatio = Math.min(xRatio, yRatio);
-        } else if (scaleType == 2) {
+        } else if (scaleType == 2)
+        {
           sRatio = Math.max(xRatio, yRatio);
         }
       }
@@ -158,25 +173,29 @@ function handleComplete(evt, comp) {
   l("helloooo1");
 }
 
-function playFn() {
+function playFn()
+{
   stopAllSounds();
   clickSd.play();
   exportRoot.play();
 }
 
-function playVideo() {
+function playVideo()
+{
   exportRoot["startBtn"].removeEventListener("click", playVideo);
   anim_container.style.display = "none";
   video_div = document.getElementById("videoPlay").style.display = "block";
 
   video = document.getElementById('videoPlay').play();
-  setTimeout(function () {
+  setTimeout(function ()
+  {
     exportRoot.gotoAndPlay("endVideo");
   }, 100);
   document.getElementById("videoPlay").onended = function () { videoEnd() };
 }
 
-function videoEnd() {
+function videoEnd()
+{
   exportRoot.play();
   document.getElementById("videoPlay").style.display = "none";
   anim_container.style.display = "block";
@@ -187,7 +206,8 @@ function videoEnd() {
   console.log("Play");
 };
 
-function prepareTheStage() {
+function prepareTheStage()
+{
   overOut = [
     exportRoot["showAnsBtn"],
     exportRoot["startBtn"],
@@ -211,14 +231,17 @@ function prepareTheStage() {
   exportRoot["wrongFB"]["wrongBtn"].on("mouseover", over_pic);
   exportRoot["wrongFB"]["wrongBtn"].on("mouseout", out_pic);
 
-  for (var i = 0; i < overOut.length; i++) {
+  for (var i = 0; i < overOut.length; i++)
+  {
     console.log(i);
     overOut[i].cursor = "pointer";
     overOut[i].on("mouseover", over);
     overOut[i].on("mouseout", out);
   }
-  for (let s = 1; s <= ansTrue; s++) {
-    for (let i = 1; i <= ansTrue; i++) {
+  for (let s = 1; s <= ansTrue; s++)
+  {
+    for (let i = 1; i <= ansTrue; i++)
+    {
       exportRoot["answers"]["s" + s + "_" + "p" + i].id = i;
       exportRoot["answers"]["s" + s + "_" + "p" + i].cursor = "pointer";
       exportRoot["answers"]["s" + s + "_" + "p" + i].gotoAndStop(0);
@@ -302,14 +325,16 @@ function prepareTheStage() {
   soundsArr2 = [sound1, sound2, sound3, sound4];
   stopAllSounds();
 
-  for (let i = 1; i <= numAns; i++) {
+  for (let i = 1; i <= numAns; i++)
+  {
     exportRoot["a" + i].clicked = false;
     exportRoot["a" + i].id = i;
     exportRoot["a" + i].clickNum = null;
     console.log("i: " + i);
   }
 
-  function nextAnswersScreen(e) {
+  function nextAnswersScreen(e)
+  {
     stopAllSounds();
     console.log("nextScreenFB" + e.currentTarget.id);
     screenAnsFB = e.currentTarget.id;
@@ -317,14 +342,17 @@ function prepareTheStage() {
     soundsArr2[screenAnsFB - 1].play();
     exportRoot["answers"]["s" + screenAnsFB].gotoAndStop(1);
     exportRoot["answers"]["v" + screenAnsFB].gotoAndStop(1);
-    soundsArr2[screenAnsFB - 1].on("end", function () {
+    soundsArr2[screenAnsFB - 1].on("end", function ()
+    {
       exportRoot["answers"]["s" + screenAnsFB].gotoAndStop(0);
       exportRoot["answers"]["v" + screenAnsFB].gotoAndStop(0);
     });
   }
 
-  function nextScreenFB() {
-    if (screenAnsFB <= 3) {
+  function nextScreenFB()
+  {
+    if (screenAnsFB <= 3)
+    {
       screenAnsFB++;
     }
     stopAllSounds();
@@ -333,13 +361,16 @@ function prepareTheStage() {
     soundsArr2[screenAnsFB - 1].play();
     exportRoot["answers"]["s" + screenAnsFB].gotoAndStop(1);
     exportRoot["answers"]["v" + screenAnsFB].gotoAndStop(1);
-    soundsArr2[screenAnsFB - 1].on("end", function () {
+    soundsArr2[screenAnsFB - 1].on("end", function ()
+    {
       exportRoot["answers"]["s" + screenAnsFB].gotoAndStop(0);
       exportRoot["answers"]["v" + screenAnsFB].gotoAndStop(0);
     });
   }
-  function prevScreenFB() {
-    if (screenAnsFB > 1) {
+  function prevScreenFB()
+  {
+    if (screenAnsFB > 1)
+    {
       screenAnsFB--;
     }
     stopAllSounds();
@@ -348,7 +379,8 @@ function prepareTheStage() {
     soundsArr2[screenAnsFB - 1].play();
     exportRoot["answers"]["s" + screenAnsFB].gotoAndStop(1);
     exportRoot["answers"]["v" + screenAnsFB].gotoAndStop(1);
-    soundsArr2[screenAnsFB - 1].on("end", function () {
+    soundsArr2[screenAnsFB - 1].on("end", function ()
+    {
       exportRoot["answers"]["s" + screenAnsFB].gotoAndStop(0);
       exportRoot["answers"]["v" + screenAnsFB].gotoAndStop(0);
     });
@@ -356,13 +388,15 @@ function prepareTheStage() {
 
 
   exportRoot["startBtn"].addEventListener("click", playVideo);
-  exportRoot["startBtn2"].addEventListener("click", function () {
+  exportRoot["startBtn2"].addEventListener("click", function ()
+  {
     stopAllSounds();
     clickSd.play();
     exportRoot.play();
   });
 
-  exportRoot["rightFB"]["nextBtn"].addEventListener("click", function () {
+  exportRoot["rightFB"]["nextBtn"].addEventListener("click", function ()
+  {
     stopAllSounds();
     clickSd.play();
     hideFB();
@@ -376,7 +410,8 @@ function prepareTheStage() {
   exportRoot["answers"]["nextBtnAns"].addEventListener("click", nextScreenFB);
   exportRoot["answers"]["prevBtnAns"].cursor = "pointer";
   exportRoot["answers"]["prevBtnAns"].addEventListener("click", prevScreenFB);
-  exportRoot["tryFB"]["retryBtn"].addEventListener("click", function () {
+  exportRoot["tryFB"]["retryBtn"].addEventListener("click", function ()
+  {
     exportRoot["a" + prevAns].clickNum = null;
     stopAllSounds();
     clickSd.play();
@@ -386,7 +421,8 @@ function prepareTheStage() {
     tryFB = false;
     console.log("retryBtn");
   });
-  exportRoot["wrongFB"]["wrongBtn"].addEventListener("click", function () {
+  exportRoot["wrongFB"]["wrongBtn"].addEventListener("click", function ()
+  {
     stopAllSounds();
     clickSd.play();
     hideFB();
@@ -397,17 +433,20 @@ function prepareTheStage() {
     currentQ = 1;
     score = 0;
   });
-  exportRoot["showAnsBtn"].addEventListener("click", function () {
+  exportRoot["showAnsBtn"].addEventListener("click", function ()
+  {
     //hideFB();
     stopAllSounds();
     exportRoot["showAnsBtn"].alpha = 0;
     exportRoot["answers"].alpha = 1;
     exportRoot["answers"].gotoAndPlay(0);
-    setTimeout(() => {
+    setTimeout(() =>
+    {
       exportRoot["answers"]["s1"].gotoAndStop(1);
       exportRoot["answers"]["v1"].gotoAndStop(1);
       sound1.play();
-      sound1.on("end", function () {
+      sound1.on("end", function ()
+      {
         exportRoot["answers"]["s1"].gotoAndStop(0);
         exportRoot["answers"]["v1"].gotoAndStop(0);
       });
@@ -417,7 +456,8 @@ function prepareTheStage() {
   hideFB();
 }
 
-function hideFB() {
+function hideFB()
+{
   exportRoot["wrongFB"].alpha = 0;
   exportRoot["wrongFB"].playV = false;
   exportRoot["rightFB"].alpha = 0;
@@ -431,14 +471,18 @@ function hideFB() {
   exportRoot["showAnsBtn"].gotoAndStop(0);
 }
 
-function stopAllSounds() {
-  for (var s = 0; s < soundsArr.length; s++) {
+function stopAllSounds()
+{
+  for (var s = 0; s < soundsArr.length; s++)
+  {
     soundsArr[s].stop();
   }
 }
 
-function activateClick() {
-  for (var i = 1; i <= numAns; i++) {
+function activateClick()
+{
+  for (var i = 1; i <= numAns; i++)
+  {
     exportRoot["a" + i].gotoAndStop(0);
     exportRoot["a" + i].clicked = true;
     exportRoot["a" + i].clickNum = null;
@@ -447,10 +491,14 @@ function activateClick() {
     exportRoot["a" + i].addEventListener("mouseover", over2);
     exportRoot["a" + i].addEventListener("mouseout", out);
   }
+  exportRoot["soundBtn"].addEventListener("click", sound);
 }
-function activateClick2() {
-  for (var i = 1; i <= numAns; i++) {
-    if (exportRoot["a" + i].clickNum == null) {
+function activateClick2()
+{
+  for (var i = 1; i <= numAns; i++)
+  {
+    if (exportRoot["a" + i].clickNum == null)
+    {
       exportRoot["a" + i].gotoAndStop(0);
       exportRoot["a" + i].clicked = true;
       exportRoot["a" + i].cursor = "pointer";
@@ -462,8 +510,10 @@ function activateClick2() {
   exportRoot["soundBtn"].addEventListener("click", sound);
 }
 
-function deactivateClick() {
-  for (let i = 1; i <= numAns; i++) {
+function deactivateClick()
+{
+  for (let i = 1; i <= numAns; i++)
+  {
     // exportRoot["a" + i].gotoAndStop(0);
     exportRoot["a" + i].clicked = false;
     exportRoot["a" + i].cursor = "auto";
@@ -473,7 +523,8 @@ function deactivateClick() {
   }
 }
 
-function chooseAnsFn(e3) {
+function chooseAnsFn(e3)
+{
   stopAllSounds();
   clickSd.play();
 
@@ -488,7 +539,8 @@ function chooseAnsFn(e3) {
 }
 
 
-function confirmFN() {
+function confirmFN()
+{
   soundMuted = false;
   stopAllSounds();
   clickSd.play();
@@ -497,22 +549,27 @@ function confirmFN() {
   exportRoot["quz" + currentQ].gotoAndStop(0);
   exportRoot["soundBtn"].gotoAndStop(0);
   deactivateClick();
-  if (currentQ == exportRoot["a" + currentQ].clickNum) {
+  if (currentQ == exportRoot["a" + currentQ].clickNum)
+  {
     exportRoot["rightFB"].playV = true;
     exportRoot["rightFB"].alpha = 1;
     exportRoot["rightFB"].gotoAndPlay(0);
-    setTimeout(() => {
-      for (var i = 1; i <= currentQ; i++) {
+    setTimeout(() =>
+    {
+      for (var i = 1; i <= currentQ; i++)
+      {
         exportRoot["rightFB"]["star" + i].gotoAndStop(2);
         console.log("starFB" + i);
       }
     }, 3000);
 
-  } else if (attempts !== maxAttempts) {
+  } else if (attempts !== maxAttempts)
+  {
     exportRoot["tryFB"].playV = true;
     exportRoot["tryFB"].alpha = 1;
     exportRoot["tryFB"].gotoAndPlay(0);
-  } else {
+  } else
+  {
     exportRoot["wrongFB"].playV = true;
     exportRoot["wrongFB"].alpha = 1;
     exportRoot["wrongFB"].gotoAndPlay(0);
@@ -520,7 +577,8 @@ function confirmFN() {
 }
 
 
-function retryFN() {
+function retryFN()
+{
   currentQ = 1;
   stopAllSounds();
   clickSd.play();
@@ -535,46 +593,61 @@ function retryFN() {
 
 
 
-function over(e) {
+function over(e)
+{
   e.currentTarget.gotoAndStop(1);
 }
-function over2(e) {
+function over2(e)
+{
   e.currentTarget.gotoAndStop(2);
 }
 
-function over_pic() {
-  if (rightFB) {
+function over_pic()
+{
+  if (rightFB)
+  {
     exportRoot["rightFB"]["nextBtn_pic"].gotoAndStop(2);
-  } else if (tryFB) {
+  } else if (tryFB)
+  {
     exportRoot["tryFB"]["retryBtn_pic"].gotoAndStop(2);
-  } else if (wrongFB) {
+  } else if (wrongFB)
+  {
     exportRoot["wrongFB"]["wrongBtn_pic"].gotoAndStop(2);
   }
 }
 
-function out_pic() {
-  if (rightFB) {
+function out_pic()
+{
+  if (rightFB)
+  {
     exportRoot["rightFB"]["nextBtn_pic"].gotoAndStop(0);
-  } else if (tryFB) {
+  } else if (tryFB)
+  {
     exportRoot["tryFB"]["retryBtn_pic"].gotoAndStop(0);
-  } else if (wrongFB) {
+  } else if (wrongFB)
+  {
     exportRoot["wrongFB"]["wrongBtn_pic"].gotoAndStop(0);
   }
 }
 
-function out(e) {
+function out(e)
+{
   e.currentTarget.gotoAndStop(0);
 }
-function sound() {
-  if (!soundMuted) {
+function sound()
+{
+  if (!soundMuted)
+  {
     exportRoot["soundBtn"].gotoAndStop(2);
     exportRoot["quz" + currentQ].gotoAndStop(1)
     soundMuted = true;
     soundsArr2[currentQ - 1].play();
-    soundsArr2[currentQ - 1].on('end', function () {
+    soundsArr2[currentQ - 1].on('end', function ()
+    {
       exportRoot["soundBtn"].gotoAndStop(0);
     });
-  } else {
+  } else
+  {
     stopAllSounds();
     soundMuted = false;
     exportRoot["quz" + currentQ].gotoAndStop(0);
@@ -583,22 +656,27 @@ function sound() {
   }
 }
 
-function showBtns() {
-  if (currentQ == ansTrue) {
+function showBtns()
+{
+  if (currentQ == ansTrue)
+  {
     exportRoot["showAnsBtn"].alpha = 1;
     deactivateClick();
-  } else {
+  } else
+  {
     exportRoot.play();
   }
 }
 
 /*========Start=======*/
 
-function sendMessageToParent(message) {
+function sendMessageToParent(message)
+{
   window.parent.postMessage(message, "*");
 }
 
-function startTimeFn() {
+function startTimeFn()
+{
   sendMessageToParent({
     action: "start",
     data: {
@@ -607,7 +685,8 @@ function startTimeFn() {
   });
 }
 
-function finalSendMessageFn() {
+function finalSendMessageFn()
+{
   sendMessageToParent({
     action: "end",
     data: {
